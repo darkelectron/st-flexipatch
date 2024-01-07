@@ -11,6 +11,7 @@ static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
 static char *font2[] = {
 /*	"Inconsolata for Powerline:pixelsize=12:antialias=true:autohint=true", */
 /*	"Hack Nerd Font Mono:pixelsize=11:antialias=true:autohint=true", */
+  "Iosevka NF:pixelsize=12:antialias=true:autohint=true"
 };
 #endif // FONT2_PATCH
 
@@ -29,7 +30,7 @@ static const int pseudotransparency = 0;
  *             0 = no border, 100 = border width is same as cell width */
 int borderperc = 20;
 #else
-static int borderpx = 2;
+static int borderpx = 10;
 #endif // RELATIVEBORDER_PATCH
 
 #if OPENURLONCLICK_PATCH
@@ -116,7 +117,7 @@ static unsigned int cursorthickness = 2;
  *    Bold affects lines thickness if boxdraw_bold is not 0. Italic is ignored.
  * 0: disable (render all U25XX glyphs normally from the font).
  */
-const int boxdraw = 0;
+const int boxdraw = 1;
 const int boxdraw_bold = 0;
 
 /* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
@@ -239,7 +240,7 @@ Glyph style[] = {{' ',ATTR_ITALIC|ATTR_FAINT,15,16}, {' ',ATTR_ITALIC,232,11},
  * 7: Blinking st cursor
  * 8: Steady st cursor
  */
-static unsigned int cursorstyle = 1;
+static unsigned int cursorstyle = 5;
 static Rune stcursor = 0x2603; /* snowman (U+2603) */
 #else
 /*
@@ -249,7 +250,7 @@ static Rune stcursor = 0x2603; /* snowman (U+2603) */
  * 6: Bar ("|")
  * 7: Snowman ("☃")
  */
-static unsigned int cursorshape = 2;
+static unsigned int cursorshape = 6;
 #endif // BLINKING_CURSOR_PATCH
 
 /*
@@ -372,8 +373,13 @@ static MouseShortcut mshortcuts[] = {
 
 #if EXTERNALPIPE_PATCH // example command
 static char *openurlcmd[] = { "/bin/sh", "-c",
-	"xurls | dmenu -l 10 -w $WINDOWID | xargs -r open",
+	"link_grabber.sh open",
 	"externalpipe", NULL };
+
+static char *yankurlcmd[] = { "/bin/sh", "-c",
+	"link_grabber.sh yank",
+	"externalpipe", NULL };
+
 
 #if EXTERNALPIPEIN_PATCH // example command
 static char *setbgcolorcmd[] = { "/bin/sh", "-c",
@@ -427,7 +433,8 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Return,      newterm,         {.i =  0} },
 	#endif // NEWTERM_PATCH
 	#if EXTERNALPIPE_PATCH
-	{ TERMMOD,              XK_U,           externalpipe,    { .v = openurlcmd } },
+	{ MODKEY,              XK_l,           externalpipe,    { .v = openurlcmd } },
+	{ MODKEY,              XK_y,           externalpipe,    { .v = yankurlcmd } },
 	#if EXTERNALPIPEIN_PATCH
 	{ TERMMOD,              XK_M,           externalpipein,  { .v = setbgcolorcmd } },
 	#endif // EXTERNALPIPEIN_PATCH
